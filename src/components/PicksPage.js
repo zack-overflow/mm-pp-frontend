@@ -126,9 +126,6 @@ function PicksPage() {
     if (!loggedIn) {
         return (
             <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-                <nav style={{ marginBottom: '20px' }}>
-                    <Link to="/">← Back to Scoreboard</Link>
-                </nav>
                 <h1>Enter Your Picks</h1>
                 <p style={{ color: '#666', marginBottom: '20px' }}>
                     Create a new entry or log in to update your picks.
@@ -178,8 +175,7 @@ function PicksPage() {
     // Picks screen
     return (
         <div style={{ padding: '20px', maxWidth: '700px', margin: '0 auto' }}>
-            <nav style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Link to="/">← Back to Scoreboard</Link>
+            <nav style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <span style={{ color: '#666', fontSize: '14px' }}>
                         Logged in as <strong>{entrantName}</strong>
