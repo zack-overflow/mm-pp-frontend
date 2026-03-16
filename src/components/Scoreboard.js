@@ -91,9 +91,12 @@ function Scoreboard() {
         <div style={{ padding: '20px' }}>
             <h1>March Madness Scoreboard</h1>
             <Table columns={columns} data={scoreboardArray} />
-            <nav style={{ marginBottom: '20px' }}>
+            <nav style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
                 <Link to="/perfect-bracket" style={{ textDecoration: 'underline', color: 'blue' }}>
                     View "Perfect Bracket"
+                </Link>
+                <Link to="/picks" style={{ textDecoration: 'underline', color: 'blue' }}>
+                    Enter Your Picks
                 </Link>
             </nav>
         </div>
