@@ -3,6 +3,24 @@ import { Link } from 'react-router-dom';
 import Table from './Table';
 import BASE_SERVER_URL from '../config'
 
+const TOTAL_PICKS = 15;
+
+// Inline sparkline: 15 dots showing alive (green) vs eliminated (gray)
+function AliveSparkline({ aliveCount }) {
+    return (
+        <div className="alive-sparkline">
+            <div className="alive-dots">
+                {Array.from({ length: TOTAL_PICKS }, (_, i) => (
+                    <span
+                        key={i}
+                        className={`alive-dot ${i < aliveCount ? 'alive' : 'eliminated'}`}
+                    />
+                ))}
+            </div>
+            <span className="alive-count-label">{aliveCount}/{TOTAL_PICKS}</span>
+        </div>
+    );
+}
 
 // Scoreboard component that will be shown at the root route
 function Scoreboard() {
@@ -52,6 +70,7 @@ function Scoreboard() {
             {
                 Header: "Players Alive",
                 accessor: 'alive_count',
+                Cell: ({ value }) => <AliveSparkline aliveCount={value} />
             },
         ],
         []

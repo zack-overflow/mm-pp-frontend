@@ -348,9 +348,176 @@
   margin: 0;
 }
 
+/* ===== Alive Sparkline (Scoreboard) ===== */
+.alive-sparkline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alive-dots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.alive-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.alive-dot.alive {
+  background: var(--success);
+  box-shadow: 0 0 3px rgba(46, 125, 50, 0.4);
+}
+
+.alive-dot.eliminated {
+  background: #d0d0d0;
+}
+
+.alive-count-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+}
+
+/* ===== Radar Chart (Entrant Detail) ===== */
+.radar-section {
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.radar-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* ===== Ownership Donut (Player Detail) ===== */
+.ownership-section {
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.ownership-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.ownership-layout {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.ownership-chart-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.ownership-pct {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3949ab;
+}
+
+.ownership-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ownership-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.ownership-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ownership-stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.ownership-entrants {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ownership-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ownership-name-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  color: var(--primary-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ownership-name-chip:hover {
+  background: #e0e7ff;
+  color: var(--accent);
+}
+
+/* ===== Custom Chart Tooltip ===== */
+.custom-tooltip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-md);
+  font-size: 0.85rem;
+}
+
+.custom-tooltip-label {
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--text);
+}
+
 /* ===== Chart Section ===== */
 .chart-section {
   margin-top: 32px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .chart-section h2 {
