@@ -99,9 +99,6 @@ function Scoreboard() {
             <p className="page-subtitle">Click an entrant name to view their picks</p>
             <Table columns={columns} data={scoreboardArray} tableClassName="scoreboard-table" />
             <div className="nav-links">
-                <Link to="/analysis" className="nav-link">
-                    View Pick Analysis
-                </Link>
                 <Link to="/perfect-bracket" className="nav-link">
                     View Perfect Bracket
                 </Link>

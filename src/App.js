@@ -23,7 +23,6 @@ function App() {
           </Link>
           <nav>
             <Link to="/">Scoreboard</Link>
-            <Link to="/analysis">Pick Analysis</Link>
             <Link to="/perfect-bracket">Perfect Bracket</Link>
           </nav>
         </header>
