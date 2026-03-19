@@ -16,6 +16,15 @@ import Table from './Table';
 
 const BAR_COLORS = ['#3949ab', '#ff8f00', '#2e7d32', '#8e24aa', '#00838f', '#c62828'];
 
+function toPlayerSlug(playerName) {
+    return encodeURIComponent(
+        String(playerName)
+            .trim()
+            .replace(/\s+/g, '-')
+            .toUpperCase()
+    );
+}
+
 function SummaryCard({ label, value, accent }) {
     return (
         <div className="analysis-card" style={{ borderTopColor: accent }}>
@@ -51,7 +60,7 @@ function PlayerChipList({ players, emptyLabel }) {
             {players.map((player) => (
                 <Link
                     key={`${player.player}-${player.seed}-${player.team}`}
-                    to={`/player/${encodeURIComponent(player.player)}`}
+                    to={`/player/${toPlayerSlug(player.player)}`}
                     className="analysis-player-chip"
                 >
                     <strong>{player.player}</strong>
@@ -106,7 +115,7 @@ function PickAnalysis() {
                 Header: 'Player',
                 accessor: 'player',
                 Cell: ({ value }) => (
-                    <Link to={`/player/${encodeURIComponent(value)}`} className="table-link">
+                    <Link to={`/player/${toPlayerSlug(value)}`} className="table-link">
                         {value}
                     </Link>
                 ),
@@ -332,7 +341,7 @@ function PickAnalysis() {
                         )}
                         {analysisData.one_off_picks.slice(0, 10).map((player) => (
                             <div key={player.player} className="analysis-contrarian-item">
-                                <Link to={`/player/${encodeURIComponent(player.player)}`} className="table-link">
+                                <Link to={`/player/${toPlayerSlug(player.player)}`} className="table-link">
                                     {player.player}
                                 </Link>
                                 <span>{player.team} ({player.seed})</span>
