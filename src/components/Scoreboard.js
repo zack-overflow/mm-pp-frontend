@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import Table from './Table'; // Assuming you have a Table component
+import Table from './Table';
 import BASE_SERVER_URL from '../config'
 
 
@@ -32,11 +32,10 @@ function Scoreboard() {
     const columns = useMemo(
         () => [
             {
-                Header: 'Entrant (click name for details)',
+                Header: 'Entrant',
                 accessor: 'entrantName',
-                // Custom cell renderer to make the entrant name a clickable link
                 Cell: ({ value }) => (
-                    <Link to={`/entrant/${value}`} style={{ textDecoration: 'underline', color: 'blue' }}>
+                    <Link to={`/entrant/${value}`} className="table-link">
                         {value}
                     </Link>
                 )
@@ -44,7 +43,6 @@ function Scoreboard() {
             {
                 Header: 'Score',
                 accessor: 'score',
-                // Sort by score in descending order (highest first)
                 sortDescFirst: true
             },
             {
@@ -54,16 +52,7 @@ function Scoreboard() {
             {
                 Header: "Players Alive",
                 accessor: 'alive_count',
-
             },
-            // {
-            //     Header: "Projected Sum Games Remaining After R64",
-            //     accessor: 'sum_games_projected'
-            // },
-            // {
-            //     Header: "Projected Sum Games Remaining w/ Multiplier After R64",
-            //     accessor: 'sum_games_projected_multiplier'
-            // }
         ],
         []
     );
@@ -77,28 +66,24 @@ function Scoreboard() {
                 score: stats.score || 0,
                 sum_multiplier: stats.sum_multiplier || 0,
                 alive_count: stats.alive_count || 0,
-                // sum_games_projected: stats.sum_games_projected || 0,
-                // sum_games_projected_multiplier: stats.sum_games_projected_multiplier || 0,
             }))
-            .sort((a, b) => b.score - a.score); // Sort by score in descending order
+            .sort((a, b) => b.score - a.score);
     }, [scoreboardData]);
 
     // Conditional rendering after hooks
-    if (loading) return <div>Loading scoreboard...</div>;
-    if (error) return <div>Error loading scoreboard: {error.message}</div>;
+    if (loading) return <div className="loading-container">Loading scoreboard...</div>;
+    if (error) return <div className="error-container">Error loading scoreboard: {error.message}</div>;
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>March Madness Scoreboard</h1>
+        <div className="page-container">
+            <h1 className="page-title">Scoreboard</h1>
+            <p className="page-subtitle">Click an entrant name to view their picks</p>
             <Table columns={columns} data={scoreboardArray} />
-            <nav style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
-                <Link to="/perfect-bracket" style={{ textDecoration: 'underline', color: 'blue' }}>
-                    View "Perfect Bracket"
+            <div className="nav-links">
+                <Link to="/perfect-bracket" className="nav-link">
+                    View Perfect Bracket
                 </Link>
-                <Link to="/picks" style={{ textDecoration: 'underline', color: 'blue' }}>
-                    Enter Your Picks
-                </Link>
-            </nav>
+            </div>
         </div>
     );
 }

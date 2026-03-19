@@ -6,67 +6,66 @@ function Table({ columns, data }) {
         useTable({ columns, data });
 
     return (
-        <table
-            {...getTableProps()}
-            style={{ border: 'solid 1px black', width: '100%', marginBottom: '2rem' }}
-        >
-            <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                        {headerGroup.headers.map(column => (
-                            <th
-                                {...column.getHeaderProps()}
-                                key={column.id}
-                                style={{
-                                    borderBottom: 'solid 3px #ddd',
-                                    background: '#f0f0f0',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    padding: '8px'
-                                }}
-                            >
-                                {column.render('Header')}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map(row => {
-                    prepareRow(row);
-                    // Check if this player hasn't played yet
-                    const notPlayedYet = row.original.pts === 'Not played yet';
-                    const alive = row.original.alive;
+        <div className="table-wrapper">
+            <table {...getTableProps()} className="styled-table">
+                <thead>
+                    {headerGroups.map((headerGroup, headerGroupIndex) => {
+                        const headerGroupProps = headerGroup.getHeaderGroupProps();
+                        const headerGroupKey = headerGroupProps.key ?? headerGroup.id ?? `header-group-${headerGroupIndex}`;
 
-                    return (
-                        <tr
-                            {...row.getRowProps()}
-                            key={row.id}
-                            style={{
-                                // backgroundColor: notPlayedYet ? 'rgba(232, 232, 232, 0.57)' : 'white',
-                                opacity: notPlayedYet ? 0.3 : 1,
-                                backgroundColor: alive === 'No' ? '#ffebee' : 'white', // Light red background if eliminated
-                                // color: notPlayedYet ? '#999999' : 'black',
-                            }}
-                        >
-                            {row.cells.map(cell => (
-                                <td
-                                    {...cell.getCellProps()}
-                                    key={cell.column.id}
-                                    style={{
-                                        padding: '8px',
-                                        border: 'solid 1px #ddd',
-                                        fontStyle: notPlayedYet ? 'italic' : 'normal',
-                                    }}
-                                >
-                                    {cell.render('Cell')}
-                                </td>
-                            ))}
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+                        return (
+                            <tr {...headerGroupProps} key={headerGroupKey}>
+                                {headerGroup.headers.map((column, columnIndex) => (
+                                    <th
+                                        {...column.getHeaderProps()}
+                                        key={column.id ?? `header-${headerGroupIndex}-${columnIndex}`}
+                                    >
+                                        {column.render('Header')}
+                                    </th>
+                                ))}
+                            </tr>
+                        );
+                    })}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {rows.map((row, rowIndex) => {
+                        prepareRow(row);
+                        const notPlayedYet = row.original.pts === 'Not played yet';
+                        const alive = row.original.alive;
+                        const rowProps = row.getRowProps();
+                        const rowKey = rowProps.key ?? row.id ?? `row-${rowIndex}`;
+
+                        const rowClass = [
+                            alive === 'No' ? 'row-eliminated' : '',
+                            notPlayedYet ? 'row-not-played' : '',
+                        ].filter(Boolean).join(' ');
+
+                        return (
+                            <tr
+                                {...rowProps}
+                                key={rowKey}
+                                className={rowClass || undefined}
+                            >
+                                {row.cells.map((cell, cellIndex) => {
+                                    const cellProps = cell.getCellProps();
+                                    const cellKey = cellProps.key ?? cell.column.id ?? `cell-${rowKey}-${cellIndex}`;
+
+                                    return (
+                                        <td
+                                            {...cellProps}
+                                            key={cellKey}
+                                            data-label={cell.column.Header}
+                                        >
+                                            {cell.render('Cell')}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+        </div>
     );
 }
 

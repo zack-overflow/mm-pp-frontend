@@ -33,7 +33,7 @@ function PerfectBracket() {
                 Header: 'Rank',
                 accessor: 'rank',
                 id: 'rank',
-                Cell: ({ row }) => row.index + 1 // Display rank based on index
+                Cell: ({ row }) => row.index + 1
             },
             {
                 Header: 'Player',
@@ -50,23 +50,20 @@ function PerfectBracket() {
             {
                 Header: 'Picked By',
                 accessor: 'entrants',
-                // Use Cell renderer to handle empty values
                 Cell: ({ value }) => (value ? value : '')
             }
         ],
         []
     );
 
-    if (loading) return <div>Loading perfect bracket data...</div>;
-    if (error) return <div>Error loading perfect bracket: {error.message}</div>;
+    if (loading) return <div className="loading-container">Loading perfect bracket data...</div>;
+    if (error) return <div className="error-container">Error loading perfect bracket: {error.message}</div>;
 
     return (
-        <div style={{ padding: '20px' }}>
-            <nav style={{ marginBottom: '20px' }}>
-                <Link to="/">← Back to Scoreboard</Link>
-            </nav>
-            <h1>Perfect Bracket</h1>
-            <p>The top 15 players in the tournament and who picked them</p>
+        <div className="page-container">
+            <Link to="/" className="back-link">← Back to Scoreboard</Link>
+            <h1 className="page-title">Perfect Bracket</h1>
+            <p className="page-subtitle">The top 15 players in the tournament and who picked them</p>
             <Table columns={columns} data={bracketData} />
         </div>
     );

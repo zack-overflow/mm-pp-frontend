@@ -67,7 +67,7 @@ function PicksPage() {
 
     const addPlayer = (player) => {
         if (picks.length >= MAX_PICKS) return;
-        if (picks.find(p => p.name === player.name)) return; // already picked
+        if (picks.find(p => p.name === player.name)) return;
         setPicks(prev => [...prev, player]);
         setSearchQuery('');
         searchRef.current?.focus();
@@ -125,47 +125,49 @@ function PicksPage() {
     // Auth screen
     if (!loggedIn) {
         return (
-            <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-                <h1>Enter Your Picks</h1>
-                <p style={{ color: '#666', marginBottom: '20px' }}>
-                    Create a new entry or log in to update your picks.
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <input
-                        type="text"
-                        placeholder="Your name"
-                        value={entrantName}
-                        onChange={e => setEntrantName(e.target.value)}
-                        style={inputStyle}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') handleAuth('login');
-                        }}
-                        style={inputStyle}
-                    />
-                    {authError && (
-                        <div style={{ color: '#d32f2f', fontSize: '14px' }}>{authError}</div>
-                    )}
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <button
-                            onClick={() => handleAuth('create')}
-                            disabled={!entrantName || !password || loading}
-                            style={{ ...buttonStyle, background: '#1976d2' }}
-                        >
-                            Create Entry
-                        </button>
-                        <button
-                            onClick={() => handleAuth('login')}
-                            disabled={!entrantName || !password || loading}
-                            style={{ ...buttonStyle, background: '#388e3c' }}
-                        >
-                            Log In
-                        </button>
+            <div className="picks-auth-container">
+                <div className="auth-card">
+                    <h1 className="page-title">Enter Your Picks</h1>
+                    <p className="page-subtitle">
+                        Create a new entry or log in to update your picks.
+                    </p>
+                    <div className="auth-form">
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={entrantName}
+                            onChange={e => setEntrantName(e.target.value)}
+                            className="input-field"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter') handleAuth('login');
+                            }}
+                            className="input-field"
+                        />
+                        {authError && (
+                            <div className="auth-error">{authError}</div>
+                        )}
+                        <div className="auth-buttons">
+                            <button
+                                onClick={() => handleAuth('create')}
+                                disabled={!entrantName || !password || loading}
+                                className="btn btn-primary"
+                            >
+                                Create Entry
+                            </button>
+                            <button
+                                onClick={() => handleAuth('login')}
+                                disabled={!entrantName || !password || loading}
+                                className="btn btn-success"
+                            >
+                                Log In
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -174,68 +176,64 @@ function PicksPage() {
 
     // Picks screen
     return (
-        <div style={{ padding: '20px', maxWidth: '700px', margin: '0 auto' }}>
-            <nav style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ color: '#666', fontSize: '14px' }}>
-                        Logged in as <strong>{entrantName}</strong>
-                    </span>
-                    <button onClick={handleLogout} style={{ ...buttonStyle, background: '#757575', padding: '4px 12px', fontSize: '13px' }}>
-                        Log Out
-                    </button>
-                </div>
-            </nav>
+        <div className="picks-container">
+            <div className="user-bar">
+                <span className="user-bar-name">
+                    Logged in as <strong>{entrantName}</strong>
+                </span>
+                <button onClick={handleLogout} className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '13px' }}>
+                    Log Out
+                </button>
+            </div>
 
-            <h1>Your Picks</h1>
-            <p style={{ fontSize: '15px', color: picks.length === MAX_PICKS ? '#388e3c' : '#666', fontWeight: picks.length === MAX_PICKS ? 'bold' : 'normal' }}>
+            <h1 className="page-title">Your Picks</h1>
+            <p className={`picks-counter${picks.length === MAX_PICKS ? ' complete' : ''}`}>
                 {picks.length} / {MAX_PICKS} players selected
             </p>
 
             {/* Selected picks */}
-            <div style={{ marginBottom: '24px' }}>
+            <div className="picks-grid">
                 {picks.length === 0 ? (
-                    <p style={{ color: '#999', fontStyle: 'italic' }}>No players selected yet. Search below to add players.</p>
+                    <p className="empty-picks">No players selected yet. Search below to add players.</p>
                 ) : (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {picks.map(player => (
-                            <div key={player.name} style={pickChipStyle}>
-                                <span><strong>{player.name}</strong> — {player.team} ({player.seed})</span>
-                                <button
-                                    onClick={() => removePlayer(player.name)}
-                                    style={removeButtonStyle}
-                                    title="Remove player"
-                                >
-                                    x
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    picks.map(player => (
+                        <div key={player.name} className="pick-chip">
+                            <span><strong>{player.name}</strong> — {player.team} ({player.seed})</span>
+                            <button
+                                onClick={() => removePlayer(player.name)}
+                                className="pick-remove-btn"
+                                title="Remove player"
+                            >
+                                x
+                            </button>
+                        </div>
+                    ))
                 )}
             </div>
 
             {/* Save button */}
-            <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="save-section">
                 <button
                     onClick={savePicks}
                     disabled={saving || picks.length !== MAX_PICKS}
-                    style={{ ...buttonStyle, background: picks.length === MAX_PICKS ? '#1976d2' : '#bbb', cursor: picks.length === MAX_PICKS ? 'pointer' : 'not-allowed' }}
+                    className={`btn ${picks.length === MAX_PICKS ? 'btn-primary' : 'btn-disabled-gray'}`}
                 >
                     {saving ? 'Saving...' : 'Save Picks'}
                 </button>
                 {picks.length !== MAX_PICKS && picks.length > 0 && (
-                    <span style={{ fontSize: '14px', color: '#d32f2f' }}>
+                    <span className="save-msg-error">
                         Select exactly {MAX_PICKS} players to save
                     </span>
                 )}
                 {saveMessage && (
-                    <span style={{ fontSize: '14px', color: saveMessage === 'Picks saved!' ? '#388e3c' : '#d32f2f' }}>
+                    <span className={saveMessage === 'Picks saved!' ? 'save-msg-success' : 'save-msg-error'}>
                         {saveMessage}
                     </span>
                 )}
             </div>
 
             {/* Search */}
-            <div style={{ position: 'relative' }}>
+            <div className="search-container">
                 <input
                     ref={searchRef}
                     type="text"
@@ -243,28 +241,26 @@ function PicksPage() {
                     value={searchQuery}
                     onChange={e => { if (picks.length < MAX_PICKS) setSearchQuery(e.target.value); }}
                     disabled={picks.length >= MAX_PICKS}
-                    style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', ...(picks.length >= MAX_PICKS ? { background: '#f5f5f5', color: '#999' } : {}) }}
+                    className="input-field"
                 />
 
                 {/* Search results dropdown */}
                 {filteredPlayers.length > 0 && (
-                    <div style={dropdownStyle}>
+                    <div className="dropdown">
                         {filteredPlayers.slice(0, 20).map(player => (
                             <div
                                 key={player.name}
                                 onClick={() => addPlayer(player)}
-                                style={dropdownItemStyle}
-                                onMouseEnter={e => e.currentTarget.style.background = '#f0f0f0'}
-                                onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                                className="dropdown-item"
                             >
                                 <strong>{player.name}</strong>
-                                <span style={{ color: '#666', marginLeft: '8px' }}>
+                                <span style={{ color: 'var(--text-secondary)', marginLeft: '8px' }}>
                                     {player.team} ({player.seed})
                                 </span>
                             </div>
                         ))}
                         {filteredPlayers.length > 20 && (
-                            <div style={{ padding: '8px 12px', color: '#999', fontSize: '13px', fontStyle: 'italic' }}>
+                            <div className="dropdown-more">
                                 {filteredPlayers.length - 20} more results — keep typing to narrow down
                             </div>
                         )}
@@ -272,73 +268,15 @@ function PicksPage() {
                 )}
 
                 {searchQuery.trim().length > 0 && filteredPlayers.length === 0 && (
-                    <div style={{ ...dropdownStyle, padding: '12px', color: '#999', fontStyle: 'italic' }}>
-                        No matching players found.
+                    <div className="dropdown">
+                        <div className="dropdown-empty">
+                            No matching players found.
+                        </div>
                     </div>
                 )}
             </div>
         </div>
     );
 }
-
-// Styles
-const inputStyle = {
-    padding: '10px 12px',
-    fontSize: '16px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-};
-
-const buttonStyle = {
-    padding: '10px 20px',
-    fontSize: '15px',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-};
-
-const pickChipStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '6px 10px',
-    background: '#e3f2fd',
-    border: '1px solid #90caf9',
-    borderRadius: '6px',
-    fontSize: '14px',
-};
-
-const removeButtonStyle = {
-    background: 'none',
-    border: 'none',
-    color: '#d32f2f',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    lineHeight: '1',
-    padding: '0 4px',
-};
-
-const dropdownStyle = {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    background: 'white',
-    border: '1px solid #ccc',
-    borderTop: 'none',
-    borderRadius: '0 0 4px 4px',
-    maxHeight: '300px',
-    overflowY: 'auto',
-    zIndex: 10,
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-};
-
-const dropdownItemStyle = {
-    padding: '10px 12px',
-    cursor: 'pointer',
-    borderBottom: '1px solid #f0f0f0',
-};
 
 export default PicksPage;
