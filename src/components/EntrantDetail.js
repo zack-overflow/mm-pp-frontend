@@ -46,7 +46,7 @@ function EntrantDetail() {
     const columns = useMemo(
         () => [
             {
-                Header: 'Name', accessor: 'name',
+                Header: '', accessor: 'name',
                 Cell: ({ value }) => {
                     const urlName = value.replace(/\s+/g, '-');
                     return (
@@ -57,7 +57,7 @@ function EntrantDetail() {
                 }
             },
             { Header: 'Points', accessor: 'pts' },
-            { Header: 'Points w/ Multiplier', accessor: 'pts_mult' },
+            { Header: 'Pts x Mult', accessor: 'pts_mult' },
             { Header: 'Seed', accessor: 'seed' },
             { Header: 'Team', accessor: 'team' },
             {
@@ -74,7 +74,7 @@ function EntrantDetail() {
         <div className="page-container">
             <Link to="/" className="back-link">← Back to Scoreboard</Link>
             <h1 className="page-title">Players: {entrantName}</h1>
-            <Table columns={columns} data={dataArray} />
+            <Table columns={columns} data={dataArray} tableClassName="entrant-detail-table" />
         </div>
     );
 }

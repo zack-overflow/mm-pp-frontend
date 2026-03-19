@@ -1,13 +1,13 @@
 import { useTable } from 'react-table';
 
 // Table component using react-table
-function Table({ columns, data }) {
+function Table({ columns, data, tableClassName = '' }) {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({ columns, data });
 
     return (
-        <div className="table-wrapper">
-            <table {...getTableProps()} className="styled-table">
+        <div className={`table-wrapper ${tableClassName}`.trim()}>
+            <table {...getTableProps()} className={`styled-table ${tableClassName}`.trim()}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => {
                         const headerGroupProps = headerGroup.getHeaderGroupProps();

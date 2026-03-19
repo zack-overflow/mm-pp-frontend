@@ -50,7 +50,7 @@ function Scoreboard() {
     const columns = useMemo(
         () => [
             {
-                Header: 'Entrant',
+                Header: '',
                 accessor: 'entrantName',
                 Cell: ({ value }) => (
                     <Link to={`/entrant/${value}`} className="table-link">
@@ -64,11 +64,11 @@ function Scoreboard() {
                 sortDescFirst: true
             },
             {
-                Header: "Multiplier Sum",
+                Header: "Mult Sum",
                 accessor: 'sum_multiplier',
             },
             {
-                Header: "Players Alive",
+                Header: "Alive",
                 accessor: 'alive_count',
                 Cell: ({ value }) => <AliveSparkline aliveCount={value} />
             },
@@ -97,8 +97,11 @@ function Scoreboard() {
         <div className="page-container">
             <h1 className="page-title">Scoreboard</h1>
             <p className="page-subtitle">Click an entrant name to view their picks</p>
-            <Table columns={columns} data={scoreboardArray} />
+            <Table columns={columns} data={scoreboardArray} tableClassName="scoreboard-table" />
             <div className="nav-links">
+                <Link to="/analysis" className="nav-link">
+                    View Pick Analysis
+                </Link>
                 <Link to="/perfect-bracket" className="nav-link">
                     View Perfect Bracket
                 </Link>

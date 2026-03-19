@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import BASE_SERVER_URL from '../config';
 
 const MAX_PICKS = 15;

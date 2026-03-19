@@ -30,7 +30,7 @@ function PerfectBracket() {
     const columns = useMemo(
         () => [
             {
-                Header: 'Rank',
+                Header: '',
                 accessor: 'rank',
                 id: 'rank',
                 Cell: ({ row }) => row.index + 1
@@ -40,7 +40,7 @@ function PerfectBracket() {
                 accessor: 'player',
             },
             {
-                Header: 'Points w/ Multiplier',
+                Header: 'Pts x Mult',
                 accessor: 'pts_mult',
             },
             {
@@ -48,7 +48,7 @@ function PerfectBracket() {
                 accessor: 'team',
             },
             {
-                Header: 'Picked By',
+                Header: 'Picks',
                 accessor: 'entrants',
                 Cell: ({ value }) => (value ? value : '')
             }
@@ -64,7 +64,7 @@ function PerfectBracket() {
             <Link to="/" className="back-link">← Back to Scoreboard</Link>
             <h1 className="page-title">Perfect Bracket</h1>
             <p className="page-subtitle">The top 15 players in the tournament and who picked them</p>
-            <Table columns={columns} data={bracketData} />
+            <Table columns={columns} data={bracketData} tableClassName="perfect-bracket-table" />
         </div>
     );
 }

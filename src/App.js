@@ -9,6 +9,7 @@ import PlayerDetail from './components/PlayerDetail';
 import PerfectBracket from './components/PerfectBracket';
 import Scoreboard from './components/Scoreboard';
 import PicksPage from './components/PicksPage';
+import PickAnalysis from './components/PickAnalysis';
 
 // Main App component with routes
 function App() {
@@ -22,11 +23,13 @@ function App() {
           </Link>
           <nav>
             <Link to="/">Scoreboard</Link>
+            <Link to="/analysis">Pick Analysis</Link>
             <Link to="/perfect-bracket">Perfect Bracket</Link>
           </nav>
         </header>
         <Routes>
           <Route path="/" element={<Scoreboard />} />
+          <Route path="/analysis" element={<PickAnalysis />} />
           <Route path="/entrant/:entrantName" element={<EntrantDetail />} />
           <Route path="/player/:playerName" element={<PlayerDetail />} />
           <Route path="/picks" element={<PicksPage />} />
