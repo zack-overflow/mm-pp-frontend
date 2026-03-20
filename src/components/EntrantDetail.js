@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom';
+
 import Table from './Table';
 import BASE_SERVER_URL from '../config';
 
@@ -10,14 +11,14 @@ function EntrantDetail() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(`${BASE_SERVER_URL}/entrant/${entrantName}`)
-            .then(response => {
+        fetch(`${BASE_SERVER_URL}/entrant/${encodeURIComponent(entrantName)}`)
+            .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
-            .then(jsonData => {
+            .then((jsonData) => {
                 const arrayData = Object.entries(jsonData).map(([name, info]) => ({
                     name,
                     shortName: `${name.split(' ')[0][0]}. ${name.split(' ').slice(1).join(' ')}`,
@@ -37,7 +38,7 @@ function EntrantDetail() {
                 setDataArray(arrayData);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 setError(err);
                 setLoading(false);
             });
@@ -46,23 +47,22 @@ function EntrantDetail() {
     const columns = useMemo(
         () => [
             {
-                Header: '', accessor: 'name',
+                Header: '',
+                accessor: 'name',
                 Cell: ({ value }) => {
-                    const urlName = value.replace(/\s+/g, '-');
+                    const urlName = encodeURIComponent(value.replace(/\s+/g, '-'));
                     return (
                         <Link to={`/player/${urlName}`} className="table-link">
                             {value}
                         </Link>
                     );
-                }
+                },
             },
             { Header: 'Points', accessor: 'pts' },
             { Header: 'Pts x Mult', accessor: 'pts_mult' },
             { Header: 'Seed', accessor: 'seed' },
             { Header: 'Team', accessor: 'team' },
-            {
-                Header: "Alive?", accessor: 'alive'
-            },
+            { Header: 'Alive?', accessor: 'alive' },
         ],
         []
     );
@@ -73,7 +73,7 @@ function EntrantDetail() {
     return (
         <div className="page-container">
             <Link to="/" className="back-link">← Back to Scoreboard</Link>
-            <h1 className="page-title">Players: {entrantName}</h1>
+            <h1 className="page-title">Players: {decodeURIComponent(entrantName || '')}</h1>
             <Table columns={columns} data={dataArray} tableClassName="entrant-detail-table" />
         </div>
     );

@@ -66,7 +66,7 @@ function OwnershipDonut({ pickedBy, totalEntrants }) {
                             <span className="ownership-stat-label">Picked by:</span>
                             <div className="ownership-names">
                                 {pickedBy.map(name => (
-                                    <Link key={name} to={`/entrant/${name}`} className="ownership-name-chip">
+                                    <Link key={name} to={`/entrant/${encodeURIComponent(name)}`} className="ownership-name-chip">
                                         {name}
                                     </Link>
                                 ))}

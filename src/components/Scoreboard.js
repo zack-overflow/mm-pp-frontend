@@ -53,7 +53,7 @@ function Scoreboard() {
                 Header: '',
                 accessor: 'entrantName',
                 Cell: ({ value }) => (
-                    <Link to={`/entrant/${value}`} className="table-link">
+                    <Link to={`/entrant/${encodeURIComponent(value)}`} className="table-link">
                         {value}
                     </Link>
                 )
@@ -99,6 +99,9 @@ function Scoreboard() {
             <p className="page-subtitle">Click an entrant name to view their picks</p>
             <Table columns={columns} data={scoreboardArray} tableClassName="scoreboard-table" />
             <div className="nav-links">
+                <Link to="/projections" className="nav-link">
+                    View Projections
+                </Link>
                 <Link to="/perfect-bracket" className="nav-link">
                     View Perfect Bracket
                 </Link>

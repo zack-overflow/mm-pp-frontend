@@ -5,11 +5,13 @@ import ballLogo from './ball.png';
 
 // import components from components folder
 import EntrantDetail from './components/EntrantDetail';
+import EntrantProjectionDetail from './components/EntrantProjectionDetail';
 import PlayerDetail from './components/PlayerDetail';
 import PerfectBracket from './components/PerfectBracket';
 import Scoreboard from './components/Scoreboard';
 import PicksPage from './components/PicksPage';
 import PickAnalysis from './components/PickAnalysis';
+import ProjectionsPage from './components/ProjectionsPage';
 
 // Main App component with routes
 function App() {
@@ -23,11 +25,14 @@ function App() {
           </Link>
           <nav>
             <Link to="/">Scoreboard</Link>
+            <Link to="/projections">Projections</Link>
             <Link to="/perfect-bracket">Perfect Bracket</Link>
           </nav>
         </header>
         <Routes>
           <Route path="/" element={<Scoreboard />} />
+          <Route path="/projections" element={<ProjectionsPage />} />
+          <Route path="/projections/entrant/:entrantName" element={<EntrantProjectionDetail />} />
           <Route path="/analysis" element={<PickAnalysis />} />
           <Route path="/entrant/:entrantName" element={<EntrantDetail />} />
           <Route path="/player/:playerName" element={<PlayerDetail />} />
