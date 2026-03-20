@@ -28,6 +28,17 @@ function clampPercent(value) {
     return Math.max(0, Math.min(100, value));
 }
 
+function isCoverageWarning(warning) {
+    const normalized = String(warning || '').toLowerCase();
+    return (
+        normalized.includes('unresolved') ||
+        normalized.includes('could not be resolved') ||
+        normalized.includes('could not be projected') ||
+        normalized.includes('remaining totals may be understated') ||
+        normalized.includes('some picked players')
+    );
+}
+
 function ProjectedTotalCell({ currentScore, projectedRemainingMean, projectedTotalMean, projectedTotalP10, projectedTotalP90 }) {
     const lockedPoints = Number(currentScore || 0);
     const projectedPoints = Math.max(Number(projectedRemainingMean || 0), 0);
@@ -156,12 +167,9 @@ function ProjectionsPage() {
     if (error) return <div className="error-container">Error loading projections: {error.message}</div>;
     if (!projectionData) return <div className="error-container">No projection data available.</div>;
 
-    const warnings = [...(projectionData.warnings || [])];
+    const warnings = (projectionData.warnings || []).filter((warning) => !isCoverageWarning(warning));
     if (stale) {
         warnings.unshift('This snapshot is older than the scheduled 90-minute cadence, so it may be stale.');
-    }
-    if (projectionData.coverage?.unresolved_players?.length > 0) {
-        warnings.push('A small number of picks could not be projected, so some remaining totals may be understated.');
     }
 
     return (

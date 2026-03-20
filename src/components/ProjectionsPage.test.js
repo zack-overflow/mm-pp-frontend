@@ -11,12 +11,12 @@ const mockResponse = {
   n_sims: 5000,
   cadence_minutes: 90,
   coverage: {
-    matched_picks: 15,
+    matched_picks: 14,
     total_picks: 15,
-    unmatched_picks: 0,
-    unresolved_players: [],
+    unmatched_picks: 1,
+    unresolved_players: ['Boopie Miller'],
   },
-  warnings: [],
+  warnings: ['Some picked players could not be resolved for projections.'],
   entrant_projections: [
     {
       entrant: 'Zack Gottesman',
@@ -65,8 +65,11 @@ describe('ProjectionsPage', () => {
     });
 
     expect(div.textContent).toContain('Projections');
-    expect(div.textContent).toContain('Projected Remaining');
+    expect(div.textContent).toContain('Projected Total');
+    expect(div.textContent).toContain('Top 3 %');
     expect(div.textContent).toContain('Zack Gottesman');
+    expect(div.textContent).not.toContain('Some picked players could not be resolved for projections.');
+    expect(div.textContent).not.toContain('Boopie Miller');
 
     ReactDOM.unmountComponentAtNode(div);
     div.remove();
