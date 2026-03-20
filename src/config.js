@@ -13,4 +13,7 @@ if (url === 'https://mm-pp-frontend.onrender.com') {
     BASE_SERVER_URL = '';
 }
 
+// overwrite to use remote backend during local development
+BASE_SERVER_URL = 'https://mm-pp-app.onrender.com';
+
 export default BASE_SERVER_URL;
