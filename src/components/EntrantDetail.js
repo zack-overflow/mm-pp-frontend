@@ -27,6 +27,7 @@ function EntrantDetail() {
                     seed: info.seed,
                     team: info.team,
                     alive: info.alive ? 'Yes' : 'No',
+                    in_progress: Boolean(info.in_progress),
                 })).sort((a, b) => {
                     if (a.alive === 'Yes' && b.alive === 'No') return -1;
                     if (a.alive === 'No' && b.alive === 'Yes') return 1;
@@ -49,10 +50,12 @@ function EntrantDetail() {
             {
                 Header: '',
                 accessor: 'name',
-                Cell: ({ value }) => {
+                Cell: ({ value, row }) => {
                     const urlName = encodeURIComponent(value.replace(/\s+/g, '-'));
+                    const isInProgress = Boolean(row?.original?.in_progress);
                     return (
                         <Link to={`/player/${urlName}`} className="table-link">
+                            {isInProgress && <span className="live-dot" aria-hidden="true" />}
                             {value}
                         </Link>
                     );

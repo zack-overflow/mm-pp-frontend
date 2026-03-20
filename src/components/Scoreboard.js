@@ -22,6 +22,19 @@ function AliveSparkline({ aliveCount }) {
     );
 }
 
+function InProgressCount({ count }) {
+    if (!count) {
+        return <span className="live-count-none">-</span>;
+    }
+
+    return (
+        <span className="live-count-badge" title={`${count} picked player(s) currently in progress`}>
+            <span className="live-dot" aria-hidden="true" />
+            <span>{count}</span>
+        </span>
+    );
+}
+
 // Scoreboard component that will be shown at the root route
 function Scoreboard() {
     const [scoreboardData, setScoreboardData] = useState([]);
@@ -72,6 +85,11 @@ function Scoreboard() {
                 accessor: 'alive_count',
                 Cell: ({ value }) => <AliveSparkline aliveCount={value} />
             },
+            {
+                Header: "Live",
+                accessor: 'in_progress_count',
+                Cell: ({ value }) => <InProgressCount count={value} />,
+            },
         ],
         []
     );
@@ -85,6 +103,7 @@ function Scoreboard() {
                 score: stats.score || 0,
                 sum_multiplier: stats.sum_multiplier || 0,
                 alive_count: stats.alive_count || 0,
+                in_progress_count: stats.in_progress_count || 0,
             }))
             .sort((a, b) => b.score - a.score);
     }, [scoreboardData]);

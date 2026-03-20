@@ -106,14 +106,6 @@ function ProjectionsPage() {
             });
     }, []);
 
-    const stale = useMemo(() => {
-        if (!projectionData?.generated_at || !projectionData?.cadence_minutes) return false;
-        const generatedAt = new Date(projectionData.generated_at);
-        if (Number.isNaN(generatedAt.getTime())) return false;
-        const ageMs = Date.now() - generatedAt.getTime();
-        return ageMs > (Number(projectionData.cadence_minutes) + 20) * 60 * 1000;
-    }, [projectionData]);
-
     const columns = useMemo(
         () => [
             {
@@ -168,9 +160,6 @@ function ProjectionsPage() {
     if (!projectionData) return <div className="error-container">No projection data available.</div>;
 
     const warnings = (projectionData.warnings || []).filter((warning) => !isCoverageWarning(warning));
-    if (stale) {
-        warnings.unshift('This snapshot is older than the scheduled 90-minute cadence, so it may be stale.');
-    }
 
     return (
         <div className="page-container">
