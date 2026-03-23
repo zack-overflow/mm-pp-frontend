@@ -4,6 +4,11 @@ import { Link, useParams } from 'react-router-dom';
 import Table from './Table';
 import BASE_SERVER_URL from '../config';
 
+function formatTeamSeed(team, seed) {
+    if (!team) return '—';
+    return seed !== undefined && seed !== null && seed !== '' ? `${team} (${seed})` : team;
+}
+
 function EntrantDetail() {
     const { entrantName } = useParams();
     const [dataArray, setDataArray] = useState([]);
@@ -26,6 +31,7 @@ function EntrantDetail() {
                     pts_mult: info.pts_mult,
                     seed: info.seed,
                     team: info.team,
+                    team_display: formatTeamSeed(info.team, info.seed),
                     alive: info.alive ? 'Yes' : 'No',
                     in_progress: Boolean(info.in_progress),
                 })).sort((a, b) => {
@@ -61,11 +67,9 @@ function EntrantDetail() {
                     );
                 },
             },
+            { Header: 'Team', accessor: 'team_display' },
             { Header: 'Points', accessor: 'pts' },
             { Header: 'Pts x Mult', accessor: 'pts_mult' },
-            { Header: 'Seed', accessor: 'seed' },
-            { Header: 'Team', accessor: 'team' },
-            { Header: 'Alive?', accessor: 'alive' },
         ],
         []
     );
@@ -77,6 +81,16 @@ function EntrantDetail() {
         <div className="page-container">
             <Link to="/" className="back-link">← Back to Scoreboard</Link>
             <h1 className="page-title">Players: {decodeURIComponent(entrantName || '')}</h1>
+            <div className="status-legend-group">
+                <div className="projection-status-legend">
+                    <span className="projection-status-swatch" />
+                    <span>Red accent means the player is no longer alive.</span>
+                </div>
+                <div className="status-legend">
+                    <span className="live-dot" aria-hidden="true" />
+                    <span>Flashing dot means the player is currently live.</span>
+                </div>
+            </div>
             <Table columns={columns} data={dataArray} tableClassName="entrant-detail-table" />
         </div>
     );

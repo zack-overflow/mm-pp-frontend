@@ -8,7 +8,7 @@ const TOTAL_PICKS = 15;
 // Inline sparkline: 15 dots showing alive (green) vs eliminated (gray)
 function AliveSparkline({ aliveCount }) {
     return (
-        <div className="alive-sparkline">
+        <div className="alive-sparkline" aria-label={`${aliveCount} of ${TOTAL_PICKS} picks still alive`}>
             <div className="alive-dots">
                 {Array.from({ length: TOTAL_PICKS }, (_, i) => (
                     <span
@@ -18,6 +18,10 @@ function AliveSparkline({ aliveCount }) {
                 ))}
             </div>
             <span className="alive-count-label">{aliveCount}/{TOTAL_PICKS}</span>
+            <span className="alive-count-chip">
+                <span className="alive-count-chip-dot" aria-hidden="true" />
+                <span>{aliveCount}/{TOTAL_PICKS}</span>
+            </span>
         </div>
     );
 }
@@ -66,7 +70,7 @@ function Scoreboard() {
                 Header: '',
                 accessor: 'entrantName',
                 Cell: ({ value }) => (
-                    <Link to={`/entrant/${encodeURIComponent(value)}`} className="table-link">
+                    <Link to={`/entrant/${encodeURIComponent(value)}`} className="table-link scoreboard-entrant-link">
                         {value}
                     </Link>
                 )
@@ -77,7 +81,7 @@ function Scoreboard() {
                 sortDescFirst: true
             },
             {
-                Header: "Mult Sum",
+                Header: "Mult",
                 accessor: 'sum_multiplier',
             },
             {

@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import BASE_SERVER_URL from '../config';
+import ProjectionBulletCell, { getProjectionScaleMax } from './ProjectionBullet';
 import Table from './Table';
-import ProjectionRangeCell from './ProjectionRangeCell';
 
 function SummaryCard({ label, value, accent }) {
     return (
@@ -20,6 +20,11 @@ function formatNumber(value) {
 
 function formatPercent(value) {
     return `${(Number(value || 0) * 100).toFixed(1)}%`;
+}
+
+function formatTeamSeed(team, seed) {
+    if (!team) return '—';
+    return seed !== undefined && seed !== null && seed !== '' ? `${team} (${seed})` : team;
 }
 
 function GamesDistributionCell({ distribution, unavailable = false }) {
@@ -81,6 +86,7 @@ function buildEntrantRows(entrantJson, projectionRow, hasPlayerProjectionData) {
                 current_points: projection?.current_points ?? actualPoints,
                 team: info.team,
                 seed: info.seed,
+                team_display: formatTeamSeed(info.team, info.seed),
                 alive: info.alive ? 'Yes' : 'No',
                 unavailable: !hasPlayerProjectionData,
                 unresolved: hasPlayerProjectionData ? Boolean(projection?.unresolved) : false,
@@ -94,7 +100,8 @@ function buildEntrantRows(entrantJson, projectionRow, hasPlayerProjectionData) {
             };
         })
         .sort((a, b) => (
-            ((b.projected_total_mean ?? -1) - (a.projected_total_mean ?? -1))
+            (a.alive === 'Yes' && b.alive === 'No' ? -1 : 0)
+            || (a.alive === 'No' && b.alive === 'Yes' ? 1 : 0)
             || (b.current_points - a.current_points)
             || a.name.localeCompare(b.name)
         ));
@@ -108,6 +115,14 @@ function EntrantProjectionDetail() {
     const [projectionMeta, setProjectionMeta] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const playerProjectionScaleMax = useMemo(
+        () => getProjectionScaleMax(dataArray, {
+            currentAccessor: (row) => row.current_points,
+            meanAccessor: (row) => row.projected_total_mean,
+            upperAccessor: (row) => row.projected_total_p90,
+        }),
+        [dataArray]
+    );
 
     useEffect(() => {
         let cancelled = false;
@@ -192,34 +207,20 @@ function EntrantProjectionDetail() {
             },
             {
                 Header: 'Team',
-                accessor: 'team',
+                accessor: 'team_display',
             },
             {
-                Header: 'Current Pts',
-                accessor: 'current_points',
-                Cell: ({ value }) => formatNumber(value),
-            },
-            {
-                Header: 'Projected Remaining',
-                accessor: 'projected_remaining_mean',
-                Cell: ({ row }) => (
-                    <ProjectionRangeCell
-                        mean={row.original.projected_remaining_mean}
-                        p10={row.original.projected_remaining_p10}
-                        p90={row.original.projected_remaining_p90}
-                        unavailable={row.original.unavailable || row.original.unresolved}
-                    />
-                ),
-            },
-            {
-                Header: 'Projected Final',
+                Header: 'Projection',
                 accessor: 'projected_total_mean',
                 Cell: ({ row }) => (
-                    <ProjectionRangeCell
+                    <ProjectionBulletCell
+                        currentScore={row.original.current_points}
                         mean={row.original.projected_total_mean}
                         p10={row.original.projected_total_p10}
                         p90={row.original.projected_total_p90}
+                        scaleMax={playerProjectionScaleMax}
                         unavailable={row.original.unavailable || row.original.unresolved}
+                        compact
                     />
                 ),
             },
@@ -233,12 +234,8 @@ function EntrantProjectionDetail() {
                     />
                 ),
             },
-            {
-                Header: 'Alive',
-                accessor: 'alive',
-            },
         ],
-        []
+        [playerProjectionScaleMax]
     );
 
     const unresolvedCount = dataArray.filter((row) => row.unresolved).length;
@@ -270,6 +267,11 @@ function EntrantProjectionDetail() {
                     Snapshot started {formatTimestamp(projectionMeta.generated_at)}.
                 </div>
             )}
+
+            <div className="projection-status-legend">
+                <span className="projection-status-swatch" />
+                <span>Red highlight means the player is no longer alive.</span>
+            </div>
 
             {projectionMeta && !projectionMeta.has_player_projections && (
                 <div className="analysis-warning">

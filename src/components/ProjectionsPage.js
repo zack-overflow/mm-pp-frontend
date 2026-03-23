@@ -2,6 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import BASE_SERVER_URL from '../config';
+import ProjectionBulletCell, {
+    ProjectionBulletBar,
+    ProjectionBulletLegend,
+    getProjectionScaleMax,
+} from './ProjectionBullet';
 import Table from './Table';
 
 function formatNumber(value) {
@@ -24,10 +29,6 @@ function formatTimestamp(timestamp) {
     });
 }
 
-function clampPercent(value) {
-    return Math.max(0, Math.min(100, value));
-}
-
 function isCoverageWarning(warning) {
     const normalized = String(warning || '').toLowerCase();
     return (
@@ -39,47 +40,41 @@ function isCoverageWarning(warning) {
     );
 }
 
-function ProjectedTotalCell({ currentScore, projectedRemainingMean, projectedTotalMean, projectedTotalP10, projectedTotalP90 }) {
-    const lockedPoints = Number(currentScore || 0);
-    const projectedPoints = Math.max(Number(projectedRemainingMean || 0), 0);
-    const totalPoints = Math.max(Number(projectedTotalMean || 0), 0.0001);
-
-    const lockedPct = clampPercent((lockedPoints / totalPoints) * 100);
-    const projectedPct = clampPercent(100 - lockedPct);
-
-    const lower = Number(projectedTotalP10 || 0);
-    const upper = Number(projectedTotalP90 || 0);
-    const average = Number(projectedTotalMean || 0);
-    const span = Math.max(upper - lower, 0.0001);
-    const markerPct = clampPercent(((average - lower) / span) * 100);
+function ProjectionOverview({ rows, scaleMax }) {
+    if (!rows.length) {
+        return null;
+    }
 
     return (
-        <div className="projection-total-cell">
-            <div className="projection-range-header">
-                <div className="projection-range-value">{formatNumber(projectedTotalMean)}</div>
-                <div className="projection-range-spread">P10-P90</div>
+        <section className="projection-overview-card">
+            <ProjectionBulletLegend
+                className="projection-overview-legend"
+                showCurrentValue={false}
+            />
+            <div className="projection-overview-list">
+                {rows.map((row, index) => (
+                    <div key={row.entrant} className="projection-overview-row">
+                        <span className="projection-overview-rank">{index + 1}</span>
+                        <Link
+                            to={`/projections/entrant/${encodeURIComponent(row.entrant)}`}
+                            className="projection-overview-name table-link"
+                        >
+                            {row.entrant}
+                        </Link>
+                        <ProjectionBulletBar
+                            currentScore={row.current_score}
+                            mean={row.projected_total_mean}
+                            p10={row.projected_total_p10}
+                            p90={row.projected_total_p90}
+                            scaleMax={scaleMax}
+                            showRangeLabel={false}
+                            className="projection-overview-bullet"
+                        />
+                        <span className="projection-overview-value">{formatNumber(row.projected_total_mean)}</span>
+                    </div>
+                ))}
             </div>
-            <div className="projection-total-mix">
-                <span className="projection-total-key projection-total-key-current">
-                    <strong>{formatNumber(lockedPoints)}</strong> actual
-                </span>
-                <span className="projection-total-key projection-total-key-projected">
-                    <strong>{formatNumber(projectedPoints)}</strong> projected
-                </span>
-            </div>
-            <div className="projection-total-stack">
-                <div className="projection-total-stack-current" style={{ width: `${lockedPct}%` }} />
-                <div className="projection-total-stack-projected" style={{ width: `${projectedPct}%` }} />
-            </div>
-            <div className="projection-range-bar">
-                <div className="projection-range-band" />
-                <div className="projection-range-marker" style={{ left: `calc(${markerPct}% - 2px)` }} />
-            </div>
-            <div className="projection-range-label">
-                <span>{formatNumber(lower)}</span>
-                <span>{formatNumber(upper)}</span>
-            </div>
-        </div>
+        </section>
     );
 }
 
@@ -87,6 +82,18 @@ function ProjectionsPage() {
     const [projectionData, setProjectionData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const entrantRows = useMemo(
+        () => projectionData?.entrant_projections ?? [],
+        [projectionData]
+    );
+    const sharedScaleMax = useMemo(
+        () => getProjectionScaleMax(entrantRows, {
+            currentAccessor: (row) => row.current_score,
+            meanAccessor: (row) => row.projected_total_mean,
+            upperAccessor: (row) => row.projected_total_p90,
+        }),
+        [entrantRows]
+    );
 
     useEffect(() => {
         fetch(`${BASE_SERVER_URL}/projections`)
@@ -124,20 +131,15 @@ function ProjectionsPage() {
                 ),
             },
             {
-                Header: 'Current Pts',
-                accessor: 'current_score',
-                Cell: ({ value }) => formatNumber(value),
-            },
-            {
                 Header: 'Projected Total',
                 accessor: 'projected_total_mean',
                 Cell: ({ row }) => (
-                    <ProjectedTotalCell
+                    <ProjectionBulletCell
                         currentScore={row.original.current_score}
-                        projectedRemainingMean={row.original.projected_remaining_mean}
-                        projectedTotalMean={row.original.projected_total_mean}
-                        projectedTotalP10={row.original.projected_total_p10}
-                        projectedTotalP90={row.original.projected_total_p90}
+                        mean={row.original.projected_total_mean}
+                        p10={row.original.projected_total_p10}
+                        p90={row.original.projected_total_p90}
+                        scaleMax={sharedScaleMax}
                     />
                 ),
             },
@@ -152,7 +154,7 @@ function ProjectionsPage() {
                 Cell: ({ value }) => formatPercent(value),
             },
         ],
-        []
+        [sharedScaleMax]
     );
 
     if (loading) return <div className="loading-container">Loading projections...</div>;
@@ -163,14 +165,20 @@ function ProjectionsPage() {
 
     return (
         <div className="page-container">
-            <Link to="/" className="back-link">← Back to Scoreboard</Link>
+            {/* <Link to="/" className="back-link">← Back to Scoreboard</Link> */}
 
             <h1 className="page-title">Projections</h1>
-            <p className="page-subtitle projection-page-note">
-                <strong>
-                    Projections based on {Math.floor((projectionData.n_sims || 0) / 1000)}k simulations run on {formatTimestamp(projectionData.generated_at)}. Win % numbers are based on the proportion of simulations where each entrant had the highest total score or was in the top three.
-                </strong>
-            </p>
+            <div className="projection-run-card">
+                <span className="projection-run-label">Simulation Run</span>
+                <span className="projection-run-value">{formatTimestamp(projectionData.generated_at)}</span>
+                <span className="projection-run-meta">{Math.floor((projectionData.n_sims || 0) / 1000)}k simulations</span>
+            </div>
+            <div className="page-subtitle projection-page-note">
+                <span>Win % numbers are based on the proportion of simulations where each entrant had the highest total score.</span>
+                <span>Top 3 % numbers are based on the proportion of simulations where each entrant finished in the top three.</span>
+            </div>
+
+            <ProjectionOverview rows={entrantRows} scaleMax={sharedScaleMax} />
 
             {warnings.length > 0 && (
                 <div className="analysis-warning">
@@ -182,7 +190,7 @@ function ProjectionsPage() {
 
             <Table
                 columns={columns}
-                data={projectionData.entrant_projections || []}
+                data={entrantRows}
                 tableClassName="projections-table"
             />
         </div>
