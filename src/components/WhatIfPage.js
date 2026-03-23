@@ -200,7 +200,7 @@ function WhatIfPage() {
     return (
         <div className="whatif-page">
             <div className="whatif-header">
-                <h1>What-If Bracket</h1>
+                <h1>Hypothetical Bracket</h1>
                 <p className="whatif-subtitle">
                     Select winners for upcoming games, then run the projection to see how it changes the standings.
                 </p>
