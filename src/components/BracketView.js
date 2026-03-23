@@ -5,32 +5,28 @@ const ROUND_NAMES = {
     1: 'R64', 2: 'R32', 3: 'Sweet 16', 4: 'Elite 8', 5: 'Final Four', 6: 'Championship',
 };
 
-function flattenBracket(node, result = []) {
-    if (!node || node.type !== 'game') return result;
-    flattenBracket(node.left, result);
-    flattenBracket(node.right, result);
-    result.push(node);
-    return result;
-}
-
-function collectRegions(bracket) {
-    if (!bracket || bracket.type !== 'game') return [];
-    // Championship (round 6) -> two Final Four games (round 5) -> four Elite 8 region roots (round 4)
+function collectBracketLayout(bracket) {
+    if (!bracket || bracket.type !== 'game') return null;
+    // Keep the displayed regions aligned to the semifinal slots:
+    // top-left vs top-right, bottom-left vs bottom-right.
     const semifinal1 = bracket.left;
     const semifinal2 = bracket.right;
-
-    // Each semifinal has two regions
-    const regions = [];
-    if (semifinal1 && semifinal1.type === 'game') {
-        regions.push(semifinal1.left);  // Region 1
-        regions.push(semifinal1.right); // Region 2
-    }
-    if (semifinal2 && semifinal2.type === 'game') {
-        regions.push(semifinal2.left);  // Region 3
-        regions.push(semifinal2.right); // Region 4
+    if (!semifinal1 || semifinal1.type !== 'game' || !semifinal2 || semifinal2.type !== 'game') {
+        return null;
     }
 
-    return { regions, semifinals: [semifinal1, semifinal2], championship: bracket };
+    const topLeft = semifinal1.left;
+    const topRight = semifinal1.right;
+    const bottomLeft = semifinal2.left;
+    const bottomRight = semifinal2.right;
+
+    return {
+        leftRegions: [topLeft, bottomLeft],
+        rightRegions: [topRight, bottomRight],
+        mobileRegions: [topLeft, topRight, bottomLeft, bottomRight],
+        semifinals: [semifinal1, semifinal2],
+        championship: bracket,
+    };
 }
 
 function collectGamesInRound(regionRoot, targetRound) {
@@ -90,9 +86,20 @@ function BracketView({ bracket, selections, ratings, ratingModel, onSelect }) {
 
     if (!bracket) return null;
 
-    const { regions, semifinals, championship } = collectRegions(bracket);
+    const layout = collectBracketLayout(bracket);
+    if (!layout) {
+        return <div className="bracket-error">Unable to parse bracket structure</div>;
+    }
 
-    if (!regions || regions.length < 4) {
+    const {
+        leftRegions,
+        rightRegions,
+        mobileRegions,
+        semifinals,
+        championship,
+    } = layout;
+
+    if (leftRegions.length < 2 || rightRegions.length < 2 || mobileRegions.length < 4) {
         return <div className="bracket-error">Unable to parse bracket structure</div>;
     }
 
@@ -100,8 +107,8 @@ function BracketView({ bracket, selections, ratings, ratingModel, onSelect }) {
     const desktopView = (
         <div className="bracket-desktop">
             <div className="bracket-left-side">
-                <RegionBracket region={regions[0]} regionIndex={0} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="left" />
-                <RegionBracket region={regions[1]} regionIndex={1} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="left" />
+                <RegionBracket region={leftRegions[0]} regionIndex={0} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="left" />
+                <RegionBracket region={leftRegions[1]} regionIndex={1} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="left" />
             </div>
             <div className="bracket-center">
                 <div className="bracket-final-four">
@@ -123,13 +130,14 @@ function BracketView({ bracket, selections, ratings, ratingModel, onSelect }) {
                         game={championship}
                         selections={selections}
                         ratings={ratings}
+                        ratingModel={ratingModel}
                         onSelect={onSelect}
                     />
                 </div>
             </div>
             <div className="bracket-right-side">
-                <RegionBracket region={regions[2]} regionIndex={2} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="right" />
-                <RegionBracket region={regions[3]} regionIndex={3} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="right" />
+                <RegionBracket region={rightRegions[0]} regionIndex={2} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="right" />
+                <RegionBracket region={rightRegions[1]} regionIndex={3} selections={selections} ratings={ratings} ratingModel={ratingModel} onSelect={onSelect} side="right" />
             </div>
         </div>
     );
@@ -138,7 +146,7 @@ function BracketView({ bracket, selections, ratings, ratingModel, onSelect }) {
     const mobileView = (
         <div className="bracket-mobile">
             <div className="bracket-region-tabs">
-                {regions.map((_, i) => (
+                {mobileRegions.map((_, i) => (
                     <button
                         key={i}
                         className={`bracket-tab ${activeRegion === i ? 'bracket-tab-active' : ''}`}
@@ -157,7 +165,7 @@ function BracketView({ bracket, selections, ratings, ratingModel, onSelect }) {
             <div className="bracket-mobile-scroll">
                 {activeRegion < 4 ? (
                     <RegionBracket
-                        region={regions[activeRegion]}
+                        region={mobileRegions[activeRegion]}
                         regionIndex={activeRegion}
                         selections={selections}
                         ratings={ratings}
