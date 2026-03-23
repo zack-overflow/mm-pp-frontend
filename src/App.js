@@ -12,6 +12,7 @@ import Scoreboard from './components/Scoreboard';
 import PicksPage from './components/PicksPage';
 import PickAnalysis from './components/PickAnalysis';
 import ProjectionsPage from './components/ProjectionsPage';
+import WhatIfPage from './components/WhatIfPage';
 
 // Main App component with routes
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Link to="/">Scoreboard</Link>
             <Link to="/projections">Projections</Link>
             <Link to="/perfect-bracket">Perfect Bracket</Link>
+            <Link to="/what-if">What-If</Link>
           </nav>
         </header>
         <Routes>
@@ -36,6 +38,7 @@ function App() {
           <Route path="/analysis" element={<PickAnalysis />} />
           <Route path="/entrant/:entrantName" element={<EntrantDetail />} />
           <Route path="/player/:playerName" element={<PlayerDetail />} />
+          <Route path="/what-if" element={<WhatIfPage />} />
           <Route path="/picks" element={<PicksPage />} />
           <Route path="/perfect-bracket" element={<PerfectBracket />} />
           <Route path="*" element={

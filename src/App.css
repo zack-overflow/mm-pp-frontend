@@ -1873,3 +1873,538 @@
     flex-direction: column;
   }
 }
+
+/* ===== What-If Bracket Page ===== */
+
+.whatif-page {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 16px 32px;
+}
+
+.whatif-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.whatif-header h1 {
+  color: var(--primary);
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+.whatif-subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.whatif-loading,
+.whatif-error {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--text-secondary);
+}
+
+.whatif-error {
+  color: var(--danger);
+}
+
+/* Stacked layout — bracket on top, projections below */
+.whatif-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.whatif-bracket-panel {
+  width: 100%;
+}
+
+.whatif-projections-panel {
+  width: 100%;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.whatif-projections-panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
+/* Controls */
+.whatif-controls {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  margin-top: 12px;
+}
+
+.whatif-selection-summary {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.whatif-options-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.whatif-model-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.whatif-option-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-right: 4px;
+}
+
+.whatif-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.whatif-toggle-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.whatif-toggle-btn:hover:not(.active) {
+  border-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.whatif-sim-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.whatif-sim-slider label {
+  white-space: nowrap;
+}
+
+.whatif-sim-slider input[type="range"] {
+  flex: 1;
+  max-width: 200px;
+  accent-color: var(--primary);
+}
+
+.whatif-sim-note {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.whatif-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.whatif-run-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.whatif-run-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+}
+
+.whatif-run-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.whatif-reset-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.whatif-reset-btn:hover:not(:disabled) {
+  border-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.whatif-reset-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.whatif-error-msg {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.whatif-sim-info {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+/* Projection comparison table */
+.whatif-table-wrapper {
+  overflow-x: auto;
+}
+
+.whatif-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.whatif-table th {
+  background: var(--primary-dark);
+  color: white;
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+
+.whatif-table th.whatif-col-num {
+  text-align: right;
+}
+
+.whatif-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.whatif-col-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.whatif-entrant-name {
+  font-weight: 500;
+}
+
+.whatif-table tbody tr:hover {
+  background: #f8f9fb;
+}
+
+.whatif-col-delta {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.whatif-delta-pos {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.whatif-delta-neg {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ===== Bracket View ===== */
+
+.bracket-view {
+  overflow-x: auto;
+}
+
+.bracket-desktop {
+  display: none;
+}
+
+.bracket-mobile {
+  display: block;
+}
+
+@media (min-width: 1000px) {
+  .bracket-desktop {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    min-width: 900px;
+  }
+  .bracket-mobile {
+    display: none;
+  }
+}
+
+.bracket-left-side,
+.bracket-right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.bracket-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 12px;
+  min-width: 180px;
+}
+
+.bracket-final-four,
+.bracket-championship {
+  text-align: center;
+}
+
+.bracket-ff-label,
+.bracket-champ-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Region */
+.bracket-region {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.bracket-region-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.bracket-region-rounds {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+
+/* Right-side regions already have rounds ordered E8→S16→R32→R64 in JS */
+
+.bracket-round {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bracket-round-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.bracket-round-games {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  justify-content: space-around;
+}
+
+/* Game Slot */
+.bracket-game-slot {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  font-size: 0.85rem;
+  min-width: 120px;
+}
+
+.bracket-game-locked {
+  background: #f8f9fb;
+}
+
+.bracket-game-selected {
+  border-color: var(--primary-light);
+  border-style: dashed;
+  border-width: 2px;
+}
+
+.bracket-game-tbd {
+  opacity: 0.5;
+}
+
+/* Team rows */
+.bracket-team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  min-height: 28px;
+  transition: background 0.1s;
+}
+
+.bracket-team-top {
+  border-bottom: 1px solid var(--border);
+}
+
+.bracket-team-selectable {
+  cursor: pointer;
+}
+
+.bracket-team-selectable:hover {
+  background: #e8eaf6;
+}
+
+.bracket-team-locked-winner {
+  font-weight: 700;
+  background: #e8f5e9;
+}
+
+.bracket-team-locked-loser {
+  color: var(--text-secondary);
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.bracket-team-selected {
+  background: #e3f2fd;
+  font-weight: 700;
+}
+
+.bracket-team-tbd {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.bracket-seed {
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 18px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.bracket-team-name {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.bracket-team-prob {
+  font-size: 0.75rem;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.bracket-team-prob-fav {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.bracket-team-prob-dog {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Probability highlight is applied inline via rgba background on team rows */
+
+/* Mobile tabs */
+.bracket-region-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.bracket-tab {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.bracket-tab-active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.bracket-error {
+  color: var(--danger);
+  text-align: center;
+  padding: 24px;
+}
+
+/* Mobile bracket — horizontally scrollable */
+.bracket-mobile-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.bracket-center-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+@media (max-width: 999px) {
+  .bracket-game-slot {
+    font-size: 0.8rem;
+    min-width: 130px;
+  }
+  .bracket-region-rounds {
+    min-width: max-content;
+  }
+  .bracket-round {
+    min-width: 135px;
+  }
+  .bracket-team-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

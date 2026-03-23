@@ -121,14 +121,6 @@ function Scoreboard() {
             <h1 className="page-title">Scoreboard</h1>
             <p className="page-subtitle">Click an entrant name to view their picks</p>
             <Table columns={columns} data={scoreboardArray} tableClassName="scoreboard-table" />
-            <div className="nav-links">
-                <Link to="/projections" className="nav-link">
-                    View Projections
-                </Link>
-                <Link to="/perfect-bracket" className="nav-link">
-                    View Perfect Bracket
-                </Link>
-            </div>
         </div>
     );
 }
