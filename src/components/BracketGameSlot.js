@@ -53,7 +53,6 @@ function BracketGameSlot({ game, selections, ratings, ratingModel, onSelect, com
     const selectedTeam = isLocked ? game.locked_winner : selections[game.label] || null;
 
     const bothKnown = leftParticipant && rightParticipant;
-    const canSelect = !isLocked && bothKnown;
 
     let leftProb = null;
     let rightProb = null;
@@ -62,8 +61,8 @@ function BracketGameSlot({ game, selections, ratings, ratingModel, onSelect, com
         rightProb = 1 - leftProb;
     }
 
-    const handleClick = (teamName) => {
-        if (!canSelect || !onSelect) return;
+    const handleClick = (teamName, selectable) => {
+        if (!selectable || !onSelect) return;
         if (selectedTeam === teamName) {
             onSelect(game.label, null);
         } else {
@@ -84,6 +83,7 @@ function BracketGameSlot({ game, selections, ratings, ratingModel, onSelect, com
         const isWinner = selectedTeam === participant.name;
         const isLoser = selectedTeam && selectedTeam !== participant.name;
         const prob = isTop ? leftProb : rightProb;
+        const isSelectable = !isLocked;
 
         let classes = 'bracket-team';
         if (isTop) classes += ' bracket-team-top';
@@ -91,17 +91,17 @@ function BracketGameSlot({ game, selections, ratings, ratingModel, onSelect, com
         if (isLocked && isWinner) classes += ' bracket-team-locked-winner';
         if (isLocked && isLoser) classes += ' bracket-team-locked-loser';
         if (!isLocked && isWinner) classes += ' bracket-team-selected';
-        if (canSelect) classes += ' bracket-team-selectable';
+        if (isSelectable) classes += ' bracket-team-selectable';
 
         const isFavorite = prob !== null && prob >= 0.5;
 
         return (
             <div
                 className={classes}
-                onClick={() => handleClick(participant.name)}
-                role={canSelect ? 'button' : undefined}
-                tabIndex={canSelect ? 0 : undefined}
-                onKeyDown={canSelect ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(participant.name); } : undefined}
+                onClick={() => handleClick(participant.name, isSelectable)}
+                role={isSelectable ? 'button' : undefined}
+                tabIndex={isSelectable ? 0 : undefined}
+                onKeyDown={isSelectable ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(participant.name, isSelectable); } : undefined}
             >
                 <span className="bracket-seed">{participant.seed}</span>
                 <span className="bracket-team-name">{participant.name}</span>

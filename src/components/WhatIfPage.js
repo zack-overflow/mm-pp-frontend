@@ -3,6 +3,15 @@ import BASE_SERVER_URL from '../config';
 import BracketView from './BracketView';
 import { resolveParticipant } from './BracketGameSlot';
 
+const ROUND_NAMES = {
+    1: 'Round of 64',
+    2: 'Round of 32',
+    3: 'Sweet 16',
+    4: 'Elite 8',
+    5: 'Final Four',
+    6: 'Championship',
+};
+
 function flattenGames(node, result = []) {
     if (!node || node.type !== 'game') return result;
     flattenGames(node.left, result);
@@ -58,7 +67,7 @@ function WhatIfPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [fetchError, setFetchError] = useState(null);
-    const [nSims, setNSims] = useState(500);
+    const [nSims, setNSims] = useState(200);
     const model = 'silver';
 
     useEffect(() => {
@@ -195,14 +204,18 @@ function WhatIfPage() {
         return <div className="whatif-loading">Loading bracket data...</div>;
     }
 
-    const selectionSummary = Object.entries(selections).map(([label, team]) => team);
+    const selectionSummary = Object.entries(selections).map(([label, team]) => {
+        const game = findGameByLabel(bracketData.bracket, label);
+        const roundName = ROUND_NAMES[game?.round_number] || 'Unknown Round';
+        return `${team} (${roundName})`;
+    });
 
     return (
         <div className="whatif-page">
             <div className="whatif-header">
                 <h1>Hypothetical Bracket</h1>
                 <p className="whatif-subtitle">
-                    Select winners for upcoming games, then run the projection to see how it changes the standings.
+                    Select winners for upcoming games, including advancing a known team before its opponent is set, then run the projection to simulate the remaining paths.
                 </p>
             </div>
             <div className="whatif-layout">
@@ -227,7 +240,7 @@ function WhatIfPage() {
                                 id="nsims-slider"
                                 type="range"
                                 min={100}
-                                max={2000}
+                                max={1000}
                                 step={100}
                                 value={nSims}
                                 onChange={e => setNSims(Number(e.target.value))}
@@ -253,7 +266,7 @@ function WhatIfPage() {
                         {error && <div className="whatif-error-msg">{error}</div>}
                         {whatIfProjections && (
                             <div className="whatif-sim-info">
-                                
+
                             </div>
                         )}
                     </div>
@@ -275,25 +288,25 @@ function WhatIfPage() {
                                 {comparisonRows.map(row => {
                                     const deltaTop3 = row.whatIfTop3 != null ? row.whatIfTop3 - row.baselineTop3 : null;
                                     return (
-                                    <tr key={row.entrant}>
-                                        <td className="whatif-entrant-name">{row.entrant}</td>
-                                        <td className="whatif-col-num">
-                                            {fmtPct(whatIfProjections ? row.whatIfWin : row.baselineWin)}
-                                        </td>
-                                        {whatIfProjections && (
-                                            <td className={`whatif-col-num whatif-delta ${row.deltaWin > 0.001 ? 'whatif-delta-pos' : row.deltaWin < -0.001 ? 'whatif-delta-neg' : ''}`}>
-                                                {fmtDelta(row.deltaWin)}
+                                        <tr key={row.entrant}>
+                                            <td className="whatif-entrant-name">{row.entrant}</td>
+                                            <td className="whatif-col-num">
+                                                {fmtPct(whatIfProjections ? row.whatIfWin : row.baselineWin)}
                                             </td>
-                                        )}
-                                        <td className="whatif-col-num">
-                                            {fmtPct(whatIfProjections ? row.whatIfTop3 : row.baselineTop3)}
-                                        </td>
-                                        {whatIfProjections && (
-                                            <td className={`whatif-col-num whatif-delta ${deltaTop3 > 0.001 ? 'whatif-delta-pos' : deltaTop3 < -0.001 ? 'whatif-delta-neg' : ''}`}>
-                                                {fmtDelta(deltaTop3)}
+                                            {whatIfProjections && (
+                                                <td className={`whatif-col-num whatif-delta ${row.deltaWin > 0.001 ? 'whatif-delta-pos' : row.deltaWin < -0.001 ? 'whatif-delta-neg' : ''}`}>
+                                                    {fmtDelta(row.deltaWin)}
+                                                </td>
+                                            )}
+                                            <td className="whatif-col-num">
+                                                {fmtPct(whatIfProjections ? row.whatIfTop3 : row.baselineTop3)}
                                             </td>
-                                        )}
-                                    </tr>
+                                            {whatIfProjections && (
+                                                <td className={`whatif-col-num whatif-delta ${deltaTop3 > 0.001 ? 'whatif-delta-pos' : deltaTop3 < -0.001 ? 'whatif-delta-neg' : ''}`}>
+                                                    {fmtDelta(deltaTop3)}
+                                                </td>
+                                            )}
+                                        </tr>
                                     );
                                 })}
                             </tbody>
