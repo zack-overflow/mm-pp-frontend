@@ -28,7 +28,7 @@ function App() {
             <Link to="/">Scoreboard</Link>
             <Link to="/projections">Projections</Link>
             <Link to="/perfect-bracket">Perfect Bracket</Link>
-            <Link to="/what-if">What-If</Link>
+            <Link to="/what-if">hypothetical bracket</Link>
           </nav>
         </header>
         <Routes>
