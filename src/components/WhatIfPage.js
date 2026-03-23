@@ -253,7 +253,7 @@ function WhatIfPage() {
                         {error && <div className="whatif-error-msg">{error}</div>}
                         {whatIfProjections && (
                             <div className="whatif-sim-info">
-                                Based on {whatIfProjections.n_sims} simulations ({whatIfProjections.model || 'kenpom'} model)
+                                
                             </div>
                         )}
                     </div>
