@@ -232,7 +232,7 @@ function WhatIfPage() {
                                 value={nSims}
                                 onChange={e => setNSims(Number(e.target.value))}
                             />
-                            <span className="whatif-sim-note">~1 min per 1,000 sims</span>
+                            <span className="whatif-sim-note">~1 min per 200 sims</span>
                         </div>
                         <div className="whatif-buttons">
                             <button
